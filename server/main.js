@@ -10,16 +10,16 @@ function start_http_server() {
     .listen(8080);
 }
 
-function start_watching_endpoints() {
-  const endpoints = [
-    { url: "http://googler.com", timeout_duration: 1000 },
-    { url: "http://microsoft.com", timeout_duration: 1000 },
-  ];
-
+function start_watching_endpoints(endpoints) {
   for (endpoint of endpoints) {
     attach.watchdog(endpoint);
     console.log(endpoint);
   }
 }
 
-start_watching_endpoints();
+const endpoints = [
+  { url: "http://googler.com", timeout_duration: 1000 },
+  { url: "http://microsoft.com", timeout_duration: 1000 },
+];
+start_watching_endpoints(endpoints);
+
