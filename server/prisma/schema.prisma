@@ -13,18 +13,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id          String  @id @default(uuid())
-  name        String?
-  email       String  @unique
-  hash        String
-  isDeveloper Boolean @default(false)
-  App         App[]
+model Dev {
+  id    String  @id @default(uuid())
+  name  String?
+  email String  @unique
+  hash  String
+  App   App[]
 }
 
 model App {
   id        String     @id @default(uuid())
-  developer User       @relation(fields: [userId], references: [id])
+  developer Dev        @relation(fields: [userId], references: [id])
   userId    String
   Endpoint  Endpoint[]
 }
