@@ -1,9 +1,13 @@
+function report_status(status, endpoint) {
+  console.log(status);
+}
+
 function watchdog(endpoint) {
   setInterval(() => {
     fetch(endpoint.url)
-      .then((res) => console.log(`${endpoint.url}: ${res.ok}`))
+      .then((res) => report_status(res.status, endpoint))
       .catch(() => {
-        console.log(`${endpoint.url}: false`);
+        report_status(false);
       });
   }, endpoint.timeout_duration);
 }
@@ -11,3 +15,4 @@ function watchdog(endpoint) {
 module.exports = {
   watchdog: watchdog,
 };
+
