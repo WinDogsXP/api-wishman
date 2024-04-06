@@ -2,29 +2,6 @@ import prisma from "./util.js";
 
 const intervals = {};
 
-function report_status(status_code, status, duration, endpoint) {
-  console.log(status, status_code);
-  prisma.endpointCall
-    .create({
-      data: {
-        endpointId: endpoint.id,
-        statusCode: status_code,
-        status: status,
-        duration: duration,
-      },
-    })
-    .then((call) => console.log(call.id));
-  prisma.endpoint.update({
-    where: {
-      id: endpoint.id,
-    },
-    data: {
-      status: status,
-    },
-  });
-  console.log(`${endpoint.url}: ${status}, time: ${duration}ms`);
-}
-
 function is_success(status) {
   return status == 200 || status == 302;
 }
@@ -40,6 +17,40 @@ function to_status(arr, cycle) {
   }
 }
 
+async function report_status(
+  status_code,
+  status,
+  duration,
+  endpoint,
+  response_body,
+  response_header
+) {
+  const body = await response_body.text();
+  const header = JSON.stringify(Object.fromEntries([...response_header]));
+  //console.log(status, status_code, header);
+  prisma.endpointCall
+    .create({
+      data: {
+        endpointId: endpoint.id,
+        statusCode: status_code,
+        status: status,
+        duration: duration,
+        responseBody: body,
+        responseHeader: header,
+      },
+    })
+    .then((call) => console.log(call.id));
+  prisma.endpoint.update({
+    where: {
+      id: endpoint.id,
+    },
+    data: {
+      status: status,
+    },
+  });
+  console.log(`${endpoint.url}: ${status}, time: ${duration}ms`);
+}
+
 export function attach_watchdog(endpoint) {
   const last = Array(10).fill(0); // 1 = success, 0 = failure
   let cycle = 0;
@@ -52,7 +63,9 @@ export function attach_watchdog(endpoint) {
           res.status,
           to_status(last, cycle),
           Date.now() - start_time,
-          endpoint
+          endpoint,
+          res,
+          res.headers
         );
         cycle++;
       })
