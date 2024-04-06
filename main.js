@@ -36,7 +36,10 @@ function start_http_server() {
           console.log(parsedBody);
           const endpoint = JSON.parse(parsedBody);
           if (req.url == "/create") {
+            console.log("creating watchdog")
+            console.log(endpoint)
             attach_watchdog(endpoint);
+
           } else if (req.url == "/delete") {
             clear_watchdog(endpoint);
           } else if (req.url == "/update") {
@@ -51,5 +54,5 @@ function start_http_server() {
     .listen(8080);
 }
 
-create_dummy_data();
+//create_dummy_data();
 start_http_server();

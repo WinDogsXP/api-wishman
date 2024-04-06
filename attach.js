@@ -26,9 +26,9 @@ async function report_status(
   response_header
 ) {
   const body = !!response_body ? await response_body.text() : "";
-  const header = !!header
-    ? JSON.stringify(Object.fromEntries([...response_header]))
-    : "";
+  const header = !!response_header
+   ? (JSON.stringify(Object.fromEntries([...response_header])))
+   : "";
   //console.log(status, status_code, header);
   prisma.endpointCall
     .create({
@@ -60,11 +60,12 @@ export function attach_watchdog(endpoint) {
     const start_time = Date.now();
     fetch(endpoint.url, {
       method: endpoint.method,
-      headers: endpoint.headers,
-      body: endpoint.body,
+      body: (!!endpoint.body)?endpoint.body:undefined,
+      headers: (!!endpoint.header)?endpoint.header:undefined
     })
       .then((res) => {
         last[cycle % 10] = is_success(res.status);
+        //console.log(res.headers)
         report_status(
           res.status,
           to_status(last, cycle),
@@ -86,7 +87,7 @@ export function attach_watchdog(endpoint) {
         );
         cycle++;
       });
-  }, endpoint.interval);
+  }, endpoint.interval * 1000);
   intervals[endpoint.id] = interval;
 }
 

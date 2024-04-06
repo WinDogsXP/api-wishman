@@ -4,6 +4,7 @@
     "prisma": "^5.12.1"
   },
   "dependencies": {
-    "@prisma/client": "^5.12.1"
+    "@prisma/client": "^5.12.1",
+    "node-fetch": "^3.3.2"
   }
 }
