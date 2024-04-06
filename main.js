@@ -51,17 +51,5 @@ function start_http_server() {
     .listen(8080);
 }
 
-// function start_watching_endpoints(endpoints) {
-//   for (let endpoint of endpoints) {
-//     attach_watchdog(endpoint);
-//     console.log(endpoint);
-//   }
-// }
-// const endpoints = [
-//   { url: "http://googler.com", timeout_duration: 1000 },
-//   { url: "http://microsoft.com", timeout_duration: 1000 },
-// ];
-//start_watching_endpoints(endpoints);
-
 create_dummy_data();
 start_http_server();
