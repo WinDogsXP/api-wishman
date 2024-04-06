@@ -1,28 +1,25 @@
 import http from "http";
 import prisma from "./util.js";
-import { attach_watchdog, clear_watchdog } from "./attach.js";
+import { attach_watchdog, clear_watchdog, update_watchdog } from "./attach.js";
 
 function create_dummy_data() {
-  prisma.user
-    .create({ data: { email: "asdasd123@mata.com", name: "asd" } })
-    .then((dev) => {
-      prisma.app
-        .create({ data: { userId: dev.id, name: "aplicatie" } })
-        .then((app) => {
-          prisma.endpoint
-            .create({
-              data: {
-                url: "http://google.com",
-                // method: "GET",
-                headers: "",
-                appId: app.id,
-                body: "",
-                interval: 100,
-                isBugged: false,
-              },
-            })
-            .then((endpoint) => console.log(endpoint.id));
-        });
+  prisma.app
+    .create({ data: { name: "aplicatie", userId: "plm" } })
+    .then((app) => {
+      prisma.endpoint
+        .create({
+          data: {
+            url: "http://google.com",
+            // method: "GET",
+            headers: "",
+            appId: app.id,
+            body: "",
+            interval: 100,
+            name: "google",
+            method: "GET",
+          },
+        })
+        .then((endpoint) => console.log(endpoint.id));
     });
 }
 
@@ -42,6 +39,8 @@ function start_http_server() {
             attach_watchdog(endpoint);
           } else if (req.url == "/delete") {
             clear_watchdog(endpoint);
+          } else if (req.url == "/update") {
+            update_watchdog(endpoint);
           }
           res.writeHead(200);
           res.end("");
@@ -64,5 +63,5 @@ function start_http_server() {
 // ];
 //start_watching_endpoints(endpoints);
 
-//create_dummy_data();
+create_dummy_data();
 start_http_server();
