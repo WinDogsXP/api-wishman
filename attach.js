@@ -25,8 +25,10 @@ async function report_status(
   response_body,
   response_header
 ) {
-  const body = await response_body.text();
-  const header = JSON.stringify(Object.fromEntries([...response_header]));
+  const body = !!response_body ? await response_body.text() : "";
+  const header = !!header
+    ? JSON.stringify(Object.fromEntries([...response_header]))
+    : "";
   //console.log(status, status_code, header);
   prisma.endpointCall
     .create({
