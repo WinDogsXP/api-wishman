@@ -63,5 +63,5 @@ function start_http_server() {
 // ];
 //start_watching_endpoints(endpoints);
 
-create_dummy_data();
+//create_dummy_data();
 start_http_server();
