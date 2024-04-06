@@ -27,10 +27,10 @@ async function report_status(
 ) {
   const body = !!response_body ? await response_body.text() : "";
   const header = !!response_header
-   ? (JSON.stringify(Object.fromEntries([...response_header])))
-   : "";
+    ? JSON.stringify(Object.fromEntries([...response_header]))
+    : "";
   //console.log(status, status_code, header);
-  prisma.endpointCall
+  await prisma.endpointCall
     .create({
       data: {
         endpointId: endpoint.id,
@@ -42,14 +42,18 @@ async function report_status(
       },
     })
     .then((call) => console.log(call.id));
-  prisma.endpoint.update({
-    where: {
-      id: endpoint.id,
-    },
-    data: {
-      status: status,
-    },
-  });
+  prisma.endpoint
+    .update({
+      where: {
+        id: endpoint.id,
+      },
+      data: {
+        status: status,
+      },
+    })
+    .then((endpoint) => {
+      console.log(endpoint.status);
+    });
   console.log(`${endpoint.url}: ${status}, time: ${duration}ms`);
 }
 
@@ -60,8 +64,8 @@ export function attach_watchdog(endpoint) {
     const start_time = Date.now();
     fetch(endpoint.url, {
       method: endpoint.method,
-      body: (!!endpoint.body)?endpoint.body:undefined,
-      headers: (!!endpoint.header)?endpoint.header:undefined
+      body: !!endpoint.body ? endpoint.body : undefined,
+      headers: !!endpoint.header ? endpoint.header : undefined,
     })
       .then((res) => {
         last[cycle % 10] = is_success(res.status);
