@@ -56,7 +56,11 @@ export function attach_watchdog(endpoint) {
   let cycle = 0;
   const interval = setInterval(() => {
     const start_time = Date.now();
-    fetch(endpoint.url)
+    fetch(endpoint.url, {
+      method: endpoint.method,
+      headers: endpoint.headers,
+      body: endpoint.body,
+    })
       .then((res) => {
         last[cycle % 10] = is_success(res.status);
         report_status(

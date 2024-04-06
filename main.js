@@ -10,7 +10,7 @@ function create_dummy_data() {
         .create({
           data: {
             url: "http://google.com",
-            // method: "GET",
+            method: "POST",
             headers: "",
             appId: app.id,
             body: "",
